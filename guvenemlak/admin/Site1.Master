@@ -1,0 +1,198 @@
+﻿<%@ Master Language="C#" AutoEventWireup="true" CodeBehind="Site1.master.cs" Inherits="guvenemlak.admin.Site1" %>
+
+<!DOCTYPE html>
+
+<html xmlns="http://www.w3.org/1999/xhtml">
+<head runat="server">
+    
+    <title></title>
+    <asp:ContentPlaceHolder ID="head" runat="server">
+    </asp:ContentPlaceHolder>
+        <asp:PlaceHolder runat="server">
+        <%: Scripts.Render("~/bundles/modernizr") %>
+    </asp:PlaceHolder>
+    <webopt:BundleReference runat="server" Path="~/Content/css" />
+    <link href="~/favicon.ico" rel="shortcut icon" type="image/x-icon" />
+            <asp:ContentPlaceHolder ID="head2" runat="server"></asp:ContentPlaceHolder>
+</head>
+<body>
+     
+    <form id="form1" runat="server">
+         <asp:ScriptManager runat="server">
+           
+            <Scripts>
+                 <%--To learn more about bundling scripts in ScriptManager see http://go.microsoft.com/fwlink/?LinkID=301884 --%>
+                <%--Framework Scripts--%>
+                <asp:ScriptReference Name="MsAjaxBundle" />
+                <asp:ScriptReference Name="jquery" />
+                <asp:ScriptReference Name="bootstrap" />
+                <asp:ScriptReference Name="respond"/>
+                <asp:ScriptReference Name="WebForms.js" Assembly="System.Web" Path="~/Scripts/WebForms/WebForms.js" />
+                <asp:ScriptReference Name="WebUIValidation.js" Assembly="System.Web" Path="~/Scripts/WebForms/WebUIValidation.js" />
+                <asp:ScriptReference Name="MenuStandards.js" Assembly="System.Web" Path="~/Scripts/WebForms/MenuStandards.js" />
+                <asp:ScriptReference Name="GridView.js" Assembly="System.Web" Path="~/Scripts/WebForms/GridView.js" />
+                <asp:ScriptReference Name="DetailsView.js" Assembly="System.Web" Path="~/Scripts/WebForms/DetailsView.js" />
+                <asp:ScriptReference Name="TreeView.js" Assembly="System.Web" Path="~/Scripts/WebForms/TreeView.js" />
+                <asp:ScriptReference Name="WebParts.js" Assembly="System.Web" Path="~/Scripts/WebForms/WebParts.js" />
+                <asp:ScriptReference Name="Focus.js" Assembly="System.Web" Path="~/Scripts/WebForms/Focus.js" />
+                <asp:ScriptReference Name="WebFormsBundle" />
+                <%--Site Scripts--%>
+            </Scripts>
+        </asp:ScriptManager>
+         <div class="container body-content">
+          <div class="navbar navbar-inverse navbar-fixed-top">
+            <div class="container">
+                <div class="navbar-header">
+                    <button type="button" class="navbar-toggle" data-toggle="collapse" data-target=".navbar-collapse">
+                        <span class="icon-bar"></span>
+                        <span class="icon-bar"></span>
+                        <span class="icon-bar"></span>
+                    </button>
+
+                </div>
+                <div class="navbar-collapse collapse">
+                      <asp:Panel ID="basarili" runat="server" Visible="false">
+                               <ul class="nav navbar-nav">
+                                <li><a runat="server"><%Response.Write( Session["admin_ad"].ToString().ToUpper()+" "+Session["admin_soyad"].ToString().ToUpper()); %></a></li>
+                                <li><a runat="server" href="cikis.aspx">Çıkış Yap</a></li>
+                            </ul>
+                     </asp:Panel>
+
+                   
+                </div>
+            </div>
+        </div><br /><br />
+        <div class="row">
+            <asp:Panel ID="isonline" Visible="False" runat="server">
+            <div class="col-md-4"></div><div class="col-md-4"><center>
+        <table ><tr><td>  <div class="container">
+        <div class="card card-container">
+                       <center><img id="profile-img"  class="profile-img-card img-yedekk" src="../images/logo.gif" />
+            <p id="profile-name" class="profile-name-card">Güven Emlak</p></center>
+            <form class="form-signin">
+                <asp:TextBox runat="server" type="text" ID="k_id" CssClass="form-control"  placeholder="kullanıcı adı" autofocus />
+                <asp:TextBox runat="server" ID="sifre" type="password" class="form-control"  placeholder="Şifre" />
+ <asp:PlaceHolder runat="server" ID="ErrorMessage" Visible="false">
+                        <p class="text-danger">
+                            <asp:Literal runat="server" ID="FailureText" />
+                        </p>
+                    </asp:PlaceHolder>            <hr />
+                <asp:Button runat="server" Text="Giriş Yap"   CssClass="btn btn-lg btn-primary btn-block btn-signin" OnClick="Unnamed4_Click" />
+                <br />
+            </form>
+        </div>
+    </div></tr></tr></table>
+           </center></div>
+           </asp:Panel> 
+           <% if(Session["admin"]!=null){ %>
+                 <div class="col-md-3">
+		<table class="table"><tr><td class="text-center"><b><asp:Label runat="server" ID="soltaraf" Text="Üyeler >" /></b></td></tr></table>
+	</div>
+            <% }%><div class="col-md-9">
+         <asp:Panel ID="defaults" runat="server" Visible="false">
+        <div class="container">
+        <div class="table-wrapper">
+            <div class="table-title">
+                <div class="row">
+                    <div class="col-sm-10"><h3>Üye <b>Detayları</b></h3></div>
+                    <div class="col-sm-2" style="text-align:right;">
+                        <a href="ekle.aspx"  class="btn btn-info add-new"><i class="glyphicon glyphicon-plus"></i> Yeni Ekle</a>
+                    </div>
+                </div>
+            </div>
+            <table class="table table-bordered">
+                <thead>
+                    <tr>
+                        <th>Ad Soyad</th>
+                        <th>E-Posta</th>
+                        <th>Şifre</th>
+                        <th>İşlemler</th>
+                    </tr>
+                </thead>
+                <tbody>
+                   <%kisi_getir(); %>
+
+  
+                </tbody>
+            </table>
+        </div>
+    </div>
+
+         </asp:Panel>
+          <asp:Panel ID="guncelle" runat="server" Visible="false">
+              <table class="table"><tr><td>
+                   <label>Üye Bilgileri :  </label> 
+                  <hr /> 
+                <div class="form-group ">
+                                <label>Ad :  </label> 
+                              <asp:RequiredFieldValidator runat="server" ControlToValidate="adg"
+                    CssClass="text-danger" ErrorMessage="*" />
+                     <asp:TextBox runat="server" Text="" type="text" placeholder="_______________" class="form-control" ID="adg"  />
+                                 
+                     <hr />
+                             <label>Soyad :  </label> 
+                              <asp:RequiredFieldValidator runat="server" ControlToValidate="soyadg"
+                    CssClass="text-danger" ErrorMessage="*" />
+                     <asp:TextBox runat="server" Text="" type="text" placeholder="_______________" class="form-control" ID="soyadg"  />
+                                 
+                     <hr /> <label>E-Posta :  </label> 
+<asp:RegularExpressionValidator  CssClass="text-danger"  ControlToValidate="epostag" ValidationExpression="^([\w-\.]+)@((\[[0-9]{1,3}\.[0-9]{1,3}\.[0-9]{1,3}\.)|(([\w-]+\.)+))([a-zA-Z]{2,4}|[0-9]{1,3})(\]?)$"  ID="RegularExpressionValidator1" runat="server" ErrorMessage="E-mail Giriniz."></asp:RegularExpressionValidator>
+                     <asp:TextBox runat="server" Text="" type="text" placeholder="_______________" class="form-control" ID="epostag"  />
+                                 
+                     <hr /><label>Şifre :  </label> 
+                              <asp:RequiredFieldValidator runat="server" ControlToValidate="sifreg"
+                    CssClass="text-danger" ErrorMessage="*" />
+                     <asp:TextBox runat="server" Text="" type="text" placeholder="_______________" class="form-control" ID="sifreg"  />
+                                 
+                     <hr />
+                            <asp:Button runat="server" type="submit" Text="GÜNCELLE" class="btn btn-primary" ID="guncellebtn" OnClientClick="alert('Üye Güncellendi.');" OnClick="guncellebtn_Click" />
+                             
+                            </div></td></tr></table>
+              </asp:Panel>
+
+
+                <asp:Panel ID="eklemepanel" runat="server" Visible="false">
+              <table class="table"><tr><td>
+                   <label>Üye Bilgileri :  </label> 
+                  <hr /> 
+                <div class="form-group ">
+                                <label>Ad :  </label> 
+                              <asp:RequiredFieldValidator runat="server" ControlToValidate="ade"
+                    CssClass="text-danger" ErrorMessage="*" />
+                     <asp:TextBox runat="server" Text="" type="text" placeholder="_______________" class="form-control" ID="ade"  />
+                                 
+                     <hr />
+                             <label>Soyad :  </label> 
+                              <asp:RequiredFieldValidator runat="server" ControlToValidate="soyade"
+                    CssClass="text-danger" ErrorMessage="*" />
+                     <asp:TextBox runat="server" Text="" type="text" placeholder="_______________" class="form-control" ID="soyade"  />
+                                 
+                     <hr /> <label>E-Posta :  </label> 
+<asp:RegularExpressionValidator  CssClass="text-danger"  ControlToValidate="epostae" ValidationExpression="^([\w-\.]+)@((\[[0-9]{1,3}\.[0-9]{1,3}\.[0-9]{1,3}\.)|(([\w-]+\.)+))([a-zA-Z]{2,4}|[0-9]{1,3})(\]?)$"  ID="RegularExpressionValidator2" runat="server" ErrorMessage="E-mail Giriniz."></asp:RegularExpressionValidator>
+                     <asp:TextBox runat="server" Text="" type="text" placeholder="_______________" class="form-control" ID="epostae"  />
+                                 
+                     <hr /><label>Şifre :  </label> 
+                              <asp:RequiredFieldValidator runat="server" ControlToValidate="sifree"
+                    CssClass="text-danger" ErrorMessage="*" />
+                     <asp:TextBox runat="server" Text="" type="text" placeholder="_______________" class="form-control" ID="sifree"  />
+                                 
+                     <hr />
+                            <asp:Button runat="server" type="submit" Text="EKLE" class="btn btn-primary" ID="ekle" OnClientClick="alert('Üye Eklendi.');" OnClick="ekle_Click"/>
+                             
+                            </div></td></tr></table>
+              </asp:Panel>
+                    </div>
+            
+
+
+        </div>
+        <asp:ContentPlaceHolder ID="ContentPlaceHolder1" runat="server">
+        
+        </asp:ContentPlaceHolder>
+    
+    </form>
+
+    
+   </div>
+</body>
+</html>

@@ -1,0 +1,208 @@
+﻿<%@ Master Language="C#" AutoEventWireup="true" CodeBehind="Site.master.cs" Inherits="guvenemlak.SiteMaster" %>
+<!DOCTYPE html>
+<html xmlns="http://www.w3.org/1999/xhtml">
+
+<head runat="server">
+       
+        <title><%: Page.Title %></title>
+        <link href="~/Styles/Site.css" rel="stylesheet" type="text/css" /> 
+   <link rel="stylesheet" href="Content/themes/base/jquery-ui.css" />
+    <link rel="stylesheet" href="Content/themes/base/autocomplete.css" />
+  <link rel="stylesheet" href="/resources/demos/style.css" />
+
+    <asp:PlaceHolder runat="server">
+        <%: Scripts.Render("~/bundles/modernizr") %>
+    </asp:PlaceHolder>
+    <webopt:BundleReference runat="server" Path="~/Content/css" />
+    <link href="~/favicon.ico" rel="shortcut icon" type="image/x-icon" />
+            <asp:ContentPlaceHolder ID="head2" runat="server"></asp:ContentPlaceHolder>
+
+</head>
+<body>
+    <form runat="server" >
+        <asp:ScriptManager runat="server">
+           
+            <Scripts>
+                 <%--To learn more about bundling scripts in ScriptManager see http://go.microsoft.com/fwlink/?LinkID=301884 --%>
+                <%--Framework Scripts--%> 
+
+                <asp:ScriptReference Name="MsAjaxBundle" />
+                <asp:ScriptReference Name="bootstrap" />
+                <asp:ScriptReference Name="jquery" />
+                <asp:ScriptReference Name="jquery.ui.combined" />
+                <asp:ScriptReference Name="respond"/>
+                <asp:ScriptReference Name="WebForms.js" Assembly="System.Web" Path="~/Scripts/WebForms/WebForms.js" />
+                <asp:ScriptReference Name="WebUIValidation.js" Assembly="System.Web" Path="~/Scripts/WebForms/WebUIValidation.js" />
+                <asp:ScriptReference Name="MenuStandards.js" Assembly="System.Web" Path="~/Scripts/WebForms/MenuStandards.js" />
+                <asp:ScriptReference Name="GridView.js" Assembly="System.Web" Path="~/Scripts/WebForms/GridView.js" />
+                <asp:ScriptReference Name="DetailsView.js" Assembly="System.Web" Path="~/Scripts/WebForms/DetailsView.js" />
+                <asp:ScriptReference Name="TreeView.js" Assembly="System.Web" Path="~/Scripts/WebForms/TreeView.js" />
+                <asp:ScriptReference Name="WebParts.js" Assembly="System.Web" Path="~/Scripts/WebForms/WebParts.js" />
+                <asp:ScriptReference Name="Focus.js" Assembly="System.Web" Path="~/Scripts/WebForms/Focus.js" />
+                <asp:ScriptReference Name="WebFormsBundle" />
+                <%--Site Scripts--%>
+            </Scripts>
+        </asp:ScriptManager>
+        <script type="text/javascript">
+            $(function () {
+                var availableTags = [
+                <% 
+          string connstring = ConfigurationManager.ConnectionStrings["DBF"].ConnectionString;
+          using (System.Data.SqlClient.SqlConnection conn = new System.Data.SqlClient.SqlConnection(connstring))
+          {
+              conn.Open();
+              System.Data.SqlClient.SqlCommand cmd1 = new System.Data.SqlClient.SqlCommand(@"
+            SELECT * FROM iller i INNER JOIN ilceler l ON i.id = l.sehir ", conn);
+              System.Data.SqlClient.SqlDataReader reader = cmd1.ExecuteReader();
+              while (reader.Read())
+              {
+                  Response.Write("'" + reader["sehir"].ToString().ToLower() + " " + reader["ilce"].ToString().ToLower() + "',");
+              }
+          }
+                    %>
+                ];
+                $("#aramayap").autocomplete({
+                    minLength:3,
+                source: availableTags
+            });
+        });
+</script>
+        <div class="navbar navbar-inverse navbar-fixed-top">
+            <div class="container">
+                <div class="navbar-header">
+                    <button type="button" class="navbar-toggle" data-toggle="collapse" data-target=".navbar-collapse">
+                        <span class="icon-bar"></span>
+                        <span class="icon-bar"></span>
+                        <span class="icon-bar"></span>
+                    </button>
+
+                </div>
+                <div class="navbar-collapse collapse">
+                    <ul class="nav navbar-nav">
+                        <li><a runat="server" href="~/">Ana Sayfa</a></li>
+                        <li><a runat="server" href="~/About">Hakkımızda</a></li>
+                        <li><a runat="server" href="~/Contact">İletişim</a></li>
+                    </ul>
+
+
+                  
+                        <asp:Panel ID="basarisiz" runat="server" Visible="false">
+                            <ul class="nav navbar-nav navbar-right">
+
+                                <li><a runat="server" href="~/Account/Register">Kayıt Ol</a></li>
+                                <li><a runat="server" href="~/Account/Login">Giriş Yap</a></li>
+                            </ul>
+                       </asp:Panel>
+                       <asp:Panel ID="basarili" runat="server" Visible="false">
+                               <ul class="nav navbar-nav navbar-right">
+                                <li><a  href="bilgilerim.aspx" runat="server"><%Response.Write( Session["kullanici"].ToString().ToUpper()+" "+Session["soyad"].ToString().ToUpper()); %></a></li>
+                                   <li><a id="A2" runat="server" href="ilanekle.aspx">İlan Ekle</a></li>
+                                       <li><a id="A4" runat="server" href="ilanlarim.aspx">İlanlarım</a></li>
+                                   <li><a id="A3" runat="server" href="mesaj.aspx">Mesajlarım</a></li>
+                                <li><a runat="server" href="cikis.aspx">Çıkış Yap</a></li>
+                            </ul>
+                     </asp:Panel>
+                </div>
+            </div>
+        </div>
+        <div class="container body-content">
+
+            <asp:Panel ID="aramapanel" runat="server" DefaultButton="btnaramayap">
+                <br />
+                <div id="ust">
+
+                    <div><a id="A1" style="color: white;" class="navbar-brand" runat="server" href="~/">
+                        <img src="images/logo.gif" /><b>Güven Emlak</b></a></div>
+                    <div class="altbolum"><div class="row">
+                        <div class="col-md-10 nopadding">
+                        <asp:TextBox runat="server" ID="aramayap" type="text"   CssClass="form-control table" placeholder="İl, İlçe veya İlan No ile ARA" />
+                         </div><div class="col-md-2 nopadding"><asp:button runat="server" ID="btnaramayap" class="btn btn-light" type="button" Text="ARA" OnClick="btnaramayap_Click" /> 
+                    </div></div></div>
+
+                </div>
+               
+                <br />
+            </asp:Panel>
+
+            <asp:ContentPlaceHolder ID="MainContent" runat="server">
+                  
+            </asp:ContentPlaceHolder>
+
+
+            <asp:Panel ID="kategori" runat="server" Visible="False" DefaultButton="filtreara">
+                <div class="row">
+                    <div class="col-md-3">
+                        <div class="filter-content">
+                            <div class="list-group list-group-flush">
+                                <a class='list-group-item'>Konut > Satılık</a>
+                            </div>
+
+                        </div>
+                        <div class="list-group-item">
+                            <div class="form-group ">
+                                <label>Konum</label>
+                                <asp:DropDownList runat="server" class="form-control" id="il_drop" name="il_drop" AutoPostBack="True" OnSelectedIndexChanged="il_drop_SelectedIndexChanged">
+                                </asp:DropDownList>
+                            </div>
+                            <div class="form-group">
+                                 <asp:DropDownList runat="server" class="form-control" id="ilce_drop" name="ilce_drop">
+                                </asp:DropDownList>
+                            </div>
+                            <hr />
+                            <label>Metrekare (m²)</label>
+                            <div class="row">
+                                <div class="col-md-6">
+                                    <asp:TextBox runat="server" type="text" class="form-control" ID="maz" placeholder="En Az" />
+                                </div>
+                                <div class="col-md-6">
+                                    <asp:TextBox runat="server" type="text" class="form-control" ID="mcok" placeholder="En Çok" />
+                                </div>
+                            </div>
+
+                            <hr />
+                            <label>Fiyat Aralığı</label>
+                            <div class="row">
+                                <div class="col-md-6">
+                                    <asp:TextBox runat="server" type="text" class="form-control" ID="faz" placeholder="En Az" />
+                                </div>
+                                <div class="col-md-6">
+                                    <asp:TextBox runat="server"  type="text" class="form-control" ID="fcok" placeholder="En Çok" />
+                                </div>
+                            </div>
+                            <hr>
+                            <asp:Button runat="server" type="submit" Text="ARA" class="btn btn-primary" ID="filtreara" OnClick="filtreara_Click" />
+
+                        </div>
+                    </div>
+
+                    <div class="col-md-9">
+
+
+
+                        <%  
+                            
+                            int t = 3, d = 3;
+
+                            string url = Request.Path;
+                            if (url == "/konut_satilik") { t = 0; d = 0; }
+                            else if (url == "/konut_kiralik") { t = 0; d = 1; }
+                            else if (url == "/isyeri_satilik") { t = 1; d = 0; }
+                            else if (url == "/isyeri_kiralik") { t = 1; d = 1; }
+                            else if (url == "/arsa_satilik") { t = 2; d = 0; }
+                            else if (url == "/arsa_kiralik") { t = 2; d = 1; }
+                            site_master.kategori_uretici(t, d);
+                             
+                             
+                    %>
+                    </div>
+                </div>
+            </asp:Panel>
+            <hr />
+
+            <footer> 
+                <p>&copy; <%: DateTime.Now.Year %> - Güven Emlak</p>
+            </footer>
+        </div>
+    </form>
+</body>
+</html>

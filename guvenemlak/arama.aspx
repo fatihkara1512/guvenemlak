@@ -6,8 +6,9 @@
 
          <%if (Request.QueryString["kelime"] != null)
              {
-                getir( Request.QueryString["kelime"]);
                  getir(Request.QueryString["kelime"]);
+                   getir(Request.QueryString["kelime"]);
+                   getir(Request.QueryString["kelime"]);
              }
            %>
                    
